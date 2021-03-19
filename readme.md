@@ -33,7 +33,7 @@ SET session_replication_role = 'origin';
 **Import full csv files**
 psql qa
 
-qa=# \copy qa_questions (id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) FROM '/Users/framejb/OneDrive/Coding/hr/SDC/data/questions.csv' DELIMITER ',' CSV HEADER
+\copy qa_questions (id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) FROM '/Users/framejb/OneDrive/Coding/hr/SDC/data/questions.csv' DELIMITER ',' CSV HEADER
 
 result = COPY 3,521,634  3/18 5pm
 

@@ -12,7 +12,7 @@ CREATE TABLE qa_questions (
   question_date TIMESTAMPTZ DEFAULT NOW(),
   asker_name VARCHAR(256) DEFAULT NULL,
   asker_email VARCHAR(256) DEFAULT NULL,
-  reported bit DEFAULT NULL,
+  reported BOOLEAN DEFAULT NULL,
   question_helpfulness INTEGER DEFAULT NULL,
   PRIMARY KEY (id)
 );
@@ -24,7 +24,7 @@ CREATE TABLE qa_answers (
   date TIMESTAMPTZ DEFAULT NOW(),
   answer_name VARCHAR(256) DEFAULT NULL,
   answerer_email VARCHAR(256) DEFAULT NULL,
-  reported BIT DEFAULT NULL,
+  reported BOOLEAN DEFAULT NULL,
   helpfulness INTEGER DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_question_id
@@ -42,4 +42,3 @@ CREATE TABLE qa_photos (
     FOREIGN KEY(answer_id)
       REFERENCES  qa_answers(id)
 );
-
