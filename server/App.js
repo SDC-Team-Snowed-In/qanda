@@ -1,5 +1,7 @@
 const express = require('express')
 const mountRoutes = require('./routes')
+const legacy = require('./LegacyAPI/legacy.js')
+
 const cors = require('cors');
 
 
@@ -16,4 +18,5 @@ app.use(cors());
 app.set('port', PORT);
 app.listen(PORT, () => {
   console.log(`Server listening at localhost:${PORT}!`);
+  // legacy.getQuestions('18202', '&count=5', '&page=1')
 });
