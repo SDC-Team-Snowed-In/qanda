@@ -1,6 +1,8 @@
 // ./routes/index.js
-const getQaQuestions = require('./getQaQuestions')
+const getQuestions = require('./getQuestions')
+const getAnswers = require('./getAnswers')
 
 module.exports = app => {
-  app.use('/qa/questions', getQaQuestions)
+  app.use('/qa/questions', getQuestions)
+  app.use('/qa/questions', getAnswers)
 }

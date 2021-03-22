@@ -6,7 +6,7 @@ CREATE DATABASE qa;
 \c qa;
 
 CREATE TABLE qa_questions (
-  id INTEGER,
+  question_id INTEGER,
   product_id INTEGER DEFAULT NULL,
   question_body VARCHAR(1000) DEFAULT NULL,
   question_date TIMESTAMPTZ DEFAULT NOW(),
@@ -14,22 +14,22 @@ CREATE TABLE qa_questions (
   asker_email VARCHAR(256) DEFAULT NULL,
   reported BOOLEAN DEFAULT NULL,
   question_helpfulness INTEGER DEFAULT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (question_id)
 );
 
 CREATE TABLE qa_answers (
-  id INTEGER,
+  answer_id INTEGER,
   question_id INTEGER,
   body VARCHAR(1000) DEFAULT NULL,
   date TIMESTAMPTZ DEFAULT NOW(),
-  answer_name VARCHAR(256) DEFAULT NULL,
+  answerer_name VARCHAR(256) DEFAULT NULL,
   answerer_email VARCHAR(256) DEFAULT NULL,
   reported BOOLEAN DEFAULT NULL,
   helpfulness INTEGER DEFAULT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (answer_id),
   CONSTRAINT fk_question_id
     FOREIGN KEY(question_id)
-      REFERENCES  qa_questions(id)
+      REFERENCES  qa_questions(question_id)
 );
 
 CREATE TABLE qa_photos (
@@ -40,5 +40,5 @@ CREATE TABLE qa_photos (
   PRIMARY KEY (id),
   CONSTRAINT fk_answer_id
     FOREIGN KEY(answer_id)
-      REFERENCES  qa_answers(id)
+      REFERENCES  qa_answers(answer_id)
 );
