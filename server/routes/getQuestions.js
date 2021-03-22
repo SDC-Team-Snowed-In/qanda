@@ -16,20 +16,43 @@ router.get('/', async (req, res) => {
   console.log({count})
   console.log({page})
 
-
-
-  let { rows } = await db.query(`
-  SELECT qa_answers.answer_id AS answer_id, qa_answers.body AS body, qa_answers.date AS date, qa_answers.answerer_name AS answerer_name, qa_answers.helpfulness AS helpfulness
-    FROM qa_answers WHERE a_answers.product_id = 1
-
+  const { rows } = await db.query(`
+  SELECT qa_questions.question_id AS question_id,
+	qa_questions.question_body AS question_body,
+	qa_questions.question_date AS question_date,
+	qa_questions.asker_name AS asker_name,
+	qa_questions.question_helpfulness AS question_helpfulness,
+	qa_questions.reported AS reported,
+	(
+	  SELECT
+		JSONB_OBJECT_AGG(qa_answers.answer_id,
+		  ROW_TO_JSON(
+			  ( SELECT r
+				  FROM ( SELECT qa_answers.answer_id as id,
+								qa_answers.body as body,
+								qa_answers.date as date,
+								qa_answers.answerer_name as answerer_name,
+								qa_answers.helpfulness as helpfulness,
+						    array[]::varchar[] as photos
+					   ) r
+			  ),
+			  true
+		  )
+	  ) AS answers
+	  FROM qa_questions
+	  LEFT JOIN qa_answers
+	  ON qa_questions.question_id = qa_answers.question_id
+	  WHERE qa_questions.product_id = $1
+	)
+  FROM qa_questions
+  WHERE qa_questions.product_id = $1
   `, [product_id])
 
   const result = {};
-  result.product_id = product_id
-  result.results = [];
-
+  result.product_id = product_id;
+  result.results = rows;
 
   console.log(result);
 
-  res.send(result)
+  res.status(200).send(result)
 })
