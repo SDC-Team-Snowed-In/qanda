@@ -1,25 +1,3 @@
-const Router = require('express-promise-router')
-const db = require('../db')
-
-const router = new Router()
-
-module.exports = router
-
-// Example endpoint curl localhost:3000/qa/questions?product_id=18203&count=5&page=1
-
-
-router.get('/', async (req, res) => {
-  const { product_id } = req.query;
-  let { count } = req.query;
-  count ? count = count : count  = '5';
-  let { page } = req.query;
-  page ? page = page : page  = '1';
-  console.log({product_id})
-  console.log({count})
-  console.log({page})
-
-
-  const { rows } = await db.query(`
   SELECT
   qa_questions.question_id AS question_id,
   qa_questions.question_body AS question_body,
@@ -55,12 +33,3 @@ router.get('/', async (req, res) => {
 
   WHERE qa_questions.product_id = $1
   --LIMIT $2 OFFSET $3
-  `, [product_id]);
-
-  const result = {};
-  result.product_id = product_id;
-  result.results = rows;
-
-  console.log(result);
-  res.status(200).send(result);
-})

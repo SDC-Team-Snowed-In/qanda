@@ -44,3 +44,5 @@ result = COPY 12,392,946  3/18 5pm
 \copy qa_photos (id, answer_id, url) FROM '/Users/framejb/OneDrive/Coding/hr/SDC/data/answers_photos.csv' DELIMITER ',' CSV HEADER
 
 result = COPY 3,717,892    3/18 5pm
+
+

@@ -8,38 +8,42 @@ module.exports = router
 
 router.get('/:question_id/answers', async (req, res) => {
   const { question_id } = req.params;
-  const { count } = req.query;
-  const { page } = req.query;
+  let { count } = req.query;
+  count ? count = count : count  = '5';
+  let { page } = req.query;
+  page ? page = page : page  = '1';
+
 
   const { rows } = await db.query(`
-    SELECT qa_answers.answer_id AS answer_id,
-    qa_answers.body AS body,
-    qa_answers.date AS date,
-    qa_answers.answerer_name AS answerer_name,
-    qa_answers.helpfulness AS helpfulness,
-    (
-      SELECT
-        JSON_AGG(
-          ROW_TO_JSON(
-              ( SELECT r
-                  FROM ( SELECT qa_photos.id as id,
-                                qa_photos.url as url
-                      ) r
-              ),
-              true
-          )
-      ) AS photos
-      FROM qa_answers
-      INNER JOIN qa_photos
-      ON qa_answers.answer_id = qa_photos.answer_id
-      LEFT JOIN qa_questions
-      ON qa_answers.question_id = qa_questions.question_id
-      WHERE qa_questions.question_id = $1
-    )
-    FROM qa_answers
-    LEFT JOIN qa_questions
-    ON qa_questions.question_id = qa_answers.question_id
-    WHERE qa_questions.question_id = $1 AND qa_answers.reported = false
+  SELECT
+  qa_answers.answer_id AS answer_id,
+  qa_answers.body AS body,
+  qa_answers.date AS date,
+  qa_answers.answerer_name AS answerer_name,
+  qa_answers.helpfulness AS helpfulness,
+  (CASE
+    WHEN subphotos.photos ISNULL
+      THEN JSON_BUILD_ARRAY()
+    WHEN subphotos.photos IS NOT null
+      THEN subphotos.photos
+    END
+  ) AS photos
+  FROM qa_answers
+  LEFT JOIN (
+  SELECT
+    qa_photos.answer_id,
+    JSON_AGG(
+      JSON_BUILD_OBJECT (
+        'id', qa_photos.id,
+        'url', qa_photos.url
+        )
+    )  AS photos
+  FROM qa_photos
+  GROUP BY qa_photos.answer_id
+  ) AS subphotos
+  ON subphotos.answer_id = qa_answers.answer_id
+  WHERE qa_answers.question_id = $1
+  --LIMIT $2 OFFSET $3
   `, [question_id])
 
   const result = {};
