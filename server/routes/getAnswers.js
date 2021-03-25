@@ -9,9 +9,12 @@ module.exports = router
 router.get('/:question_id/answers', async (req, res) => {
   const { question_id } = req.params;
   let { count } = req.query;
-  count ? count = count : count  = '5';
+  let limit = '';
+  count ? limit = count.toString() : limit  = '5';
   let { page } = req.query;
-  page ? page = page : page  = '1';
+  let offset = '';
+  page ? offset = ((page -1) * limit).toString() : offset  = '0';
+
 
 
   const { rows } = await db.query(`
@@ -42,9 +45,9 @@ router.get('/:question_id/answers', async (req, res) => {
   GROUP BY qa_photos.answer_id
   ) AS subphotos
   ON subphotos.answer_id = qa_answers.answer_id
-  WHERE qa_answers.question_id = $1
-  --LIMIT $2 OFFSET $3
-  `, [question_id])
+  WHERE qa_answers.question_id = $1 AND reported = false
+  LIMIT $2 OFFSET $3
+  `, [question_id, limit, offset])
 
   const result = {};
   result.question = question_id;

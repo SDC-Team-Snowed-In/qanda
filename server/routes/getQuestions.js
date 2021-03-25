@@ -11,10 +11,11 @@ module.exports = router
 router.get('/', async (req, res) => {
   const { product_id } = req.query;
   let { count } = req.query;
-  count ? count = count : count  = '5';
+  let limit = '';
+  count ? limit = count.toString() : limit  = '5';
   let { page } = req.query;
-  page ? page = page : page  = '1';
-  console.log({product_id})
+  let offset = '';
+  page ? offset = ((page -1) * limit).toString() : offset  = '0';
   console.log({count})
   console.log({page})
 
@@ -53,9 +54,9 @@ router.get('/', async (req, res) => {
   ) AS subanswers
   ON subanswers.question_id = qa_questions.question_id
 
-  WHERE qa_questions.product_id = $1
-  --LIMIT $2 OFFSET $3
-  `, [product_id]);
+  WHERE qa_questions.product_id = $1 AND reported = false
+  LIMIT $2 OFFSET $3
+  `, [product_id, limit, offset]);
 
   const result = {};
   result.product_id = product_id;
