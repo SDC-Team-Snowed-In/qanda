@@ -1,3 +1,4 @@
+const config = require('../../config.js')
 const { Pool, Client } = require('pg')
 //const Promise = require('bluebird');
 
@@ -5,7 +6,7 @@ const { Pool, Client } = require('pg')
 const pool = new Pool({
   host: 'localhost',
   user: 'postgres',
-  password: '', // add password
+  password: `${config.password}`,
   database: 'qa'
 })
 
