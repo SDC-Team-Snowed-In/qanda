@@ -2,7 +2,7 @@
   "name": "qanda",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
