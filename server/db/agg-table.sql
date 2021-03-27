@@ -33,12 +33,8 @@ CREATE TABLE qa_questions_answers_agg AS
       LEFT JOIN (
         SELECT
           qa_photos.answer_id,
-          JSON_AGG(
-            JSONB_BUILD_OBJECT (
-            'id', qa_photos.id,
-            'url', qa_photos.url
-            )
-          ) AS subphotos
+          JSON_AGG( qa_photos.url )
+		 AS subphotos
         FROM qa_photos
         GROUP BY qa_photos.answer_id
       ) AS subphotos
